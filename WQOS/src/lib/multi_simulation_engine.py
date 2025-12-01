@@ -13,6 +13,7 @@ import asyncio
 import json
 import time
 import logging
+import random
 from datetime import datetime
 from typing import List, Tuple, Optional, Dict, Any
 import aiohttp
@@ -339,6 +340,7 @@ async def async_set_alpha_properties(session_manager, alpha_id, name, tags=None,
         patch_url = f"{brain_api_url}/alphas/{alpha_id}"
         
         # 支持会话刷新重试
+        retry_count = 0
         while True:
             try:
                 async with session_manager.patch(patch_url, json=patch_data) as response:
@@ -542,6 +544,7 @@ async def submit_and_monitor_single_multi_simulation(session_manager, alpha_task
         logger.info(f"📋 多模拟 {task_idx + 1} 负载摘要: {len(multi_sim_data)} 个模拟, 总大小 {len(payload_str)} 字符")
         logger.debug(f"📋 多模拟 {task_idx + 1} 完整负载:\n{payload_str}")
         
+        retry_count = 0
         while True:
             try:
                 async with session_manager.post(f"{brain_api_url}/simulations", 
@@ -569,6 +572,14 @@ async def submit_and_monitor_single_multi_simulation(session_manager, alpha_task
                             collected_alpha_ids, background_task = await monitor_multi_simulation_until_complete(
                                 session_manager, progress_url, name, tags, task_idx, alpha_task
                             )
+                            # 若提示重试，则按指数退避后重新提交
+                            if isinstance(collected_alpha_ids, list) and len(collected_alpha_ids) == 1 and collected_alpha_ids[0] == "RETRY":
+                                retry_count += 1
+                                if retry_count <= 3:
+                                    backoff = min(3 * retry_count, 8)
+                                    logger.info(f"  ⏳ 多模拟 {task_idx + 1} 瞬时失败，{backoff}s后重试 ({retry_count}/3)")
+                                    await asyncio.sleep(backoff)
+                                    continue
                             break
                             
                         else:
@@ -576,9 +587,15 @@ async def submit_and_monitor_single_multi_simulation(session_manager, alpha_task
                             break
                             
                     elif response.status == 429:
-                        # 对于429错误，等待并重试
-                        logger.debug(f"⏳ 多模拟提交速率限制，等待 2 s")
-                        await asyncio.sleep(2)
+                        ra = response.headers.get('Retry-After')
+                        try:
+                            base = float(ra) if ra else 0.0
+                        except Exception:
+                            base = 0.0
+                        jitter = random.uniform(0.0, 0.75)
+                        wait = (base if base > 0 else 2.0) + jitter
+                        logger.debug(f"⏳ 多模拟提交速率限制，等待 {wait:.2f} s")
+                        await asyncio.sleep(wait)
                         continue
                         
                     else:
@@ -705,24 +722,76 @@ async def monitor_multi_simulation_until_complete(session_manager, progress_url,
                             return collected_alpha_ids, background_task
                             
                         elif status in ["ERROR", "FAIL", "TIMEOUT"]:
-                            # 尝试获取更详细的错误信息
                             error_message = response_json.get("message", "")
                             error_detail = response_json.get("error", "")
                             errors = response_json.get("errors", [])
                             details = response_json.get("details", "")
-                            
-                            error_info = f"状态: {status}"
-                            if error_message:
-                                error_info += f", 消息: {error_message}"
-                            if error_detail:
-                                error_info += f", 详情: {error_detail}"
-                            if details:
-                                error_info += f", 细节: {details}"
-                            if errors:
-                                error_info += f", 错误列表: {errors}"
-                            
-                            logger.error(f"  ❌ 多模拟 {task_idx + 1} 失败: {error_info}")
-                            logger.info(f"  📋 完整响应: {response_json}")
+                            logger.error(f"  ❌ 多模拟 {task_idx + 1} 失败: 状态={status} 消息={error_message} 详情={error_detail} 细节={details} 错误列表={errors}")
+                            children = response_json.get("children", [])
+                            # 逐个子模拟获取失败原因并入库
+                            classified_reasons = []
+                            for idx, child_id in enumerate(children):
+                                try:
+                                    child_url = f"{brain_api_url}/simulations/{child_id}"
+                                    child_json = None
+                                    backoff = 1.0
+                                    for _ in range(5):
+                                        async with session_manager.get(child_url) as child_response:
+                                            if child_response.status == 200:
+                                                child_json = await child_response.json()
+                                                break
+                                            retry_after = child_response.headers.get('Retry-After')
+                                            if retry_after:
+                                                try:
+                                                    ra = float(retry_after)
+                                                except Exception:
+                                                    ra = 0.0
+                                                jitter = random.uniform(0.0, 0.5)
+                                                await asyncio.sleep((ra if ra > 0 else 1.0) + jitter)
+                                                continue
+                                            if child_response.status in (429, 202):
+                                                jitter = random.uniform(0.0, 0.5)
+                                                await asyncio.sleep(backoff + jitter)
+                                                backoff = min(backoff * 2, 8.0)
+                                                continue
+                                            logger.warning(f"获取子模拟 {child_id} 失败: HTTP {child_response.status}")
+                                            break
+                                    failure_reason = None
+                                    error_details = None
+                                    if child_json:
+                                        failure_reason = child_json.get("message") or child_json.get("error") or child_json.get("status")
+                                        regular = child_json.get("regular") or {}
+                                        if isinstance(regular, dict):
+                                            reg_errs = regular.get("errors")
+                                            reg_desc = regular.get("description")
+                                            if reg_errs:
+                                                error_details = str(reg_errs)
+                                            elif reg_desc:
+                                                error_details = str(reg_desc)
+                                        if not error_details and child_json.get("errors"):
+                                            error_details = str(child_json.get("errors"))
+                                        child_errors = child_json.get("errors") if isinstance(child_json.get("errors"), (list, dict)) else None
+                                        cls = _classify_failure(failure_reason, None, error_details, child_errors or errors)
+                                        classified_reasons.append(cls)
+                                        # 映射表达式
+                                        alpha_expression = None
+                                        if idx < len(alpha_task):
+                                            item = alpha_task[idx]
+                                            alpha_expression = item[0] if isinstance(item, tuple) else item
+                                        # 入库失败表达式
+                                        if alpha_expression:
+                                            try:
+                                                from lib.database_utils import _record_failed_expression
+                                                tag_name = name
+                                                await _record_failed_expression(alpha_expression, tag_name, cls, error_details)
+                                            except Exception as e:
+                                                logger.warning(f"记录失败表达式异常: {e}")
+                                except Exception as e:
+                                    logger.warning(f"处理失败子模拟 {child_id} 异常: {e}")
+                            # 对于纯瞬时失败（所有子失败均为 transient 或无详情），返回重试提示
+                            if (not classified_reasons) or all(r.startswith('transient:') for r in classified_reasons):
+                                return ["RETRY"], None
+                            # 返回空结果，释放槽位
                             return collected_alpha_ids, None
                             
                     # 如果还在进行中，等待后继续
@@ -733,6 +802,8 @@ async def monitor_multi_simulation_until_complete(session_manager, progress_url,
                     # 根据Retry-After头决定等待时间
                     retry_after = response.headers.get('Retry-After', '5')
                     wait_time = float(retry_after)
+                    if response.status == 429:
+                        wait_time = max(wait_time, 2.0)
                     await asyncio.sleep(wait_time)
                     
                 else:
@@ -923,3 +994,22 @@ if __name__ == "__main__":
     print(f"- async_multi_simulate_with_concurrent_control: 智能调度的多模拟执行")
     print(f"- simulate_multiple_alphas_with_multi_mode: 统一模拟接口")
     print(f"- 智能槽位管理: 动态调度，异步属性设置，数据库写入")
+def _classify_failure(message: str = None, error: str = None, details: str = None, errors_list: Any = None) -> str:
+    t = ' '.join([str(x) for x in [message, error, details, errors_list] if x]).lower()
+    if not t.strip():
+        return 'transient:unknown'
+    if 'unknown error' in t:
+        return 'transient:unknown'
+    if (('fail' in t) or ('error' in t)) and (not details or str(details).strip() == ''):
+        return 'transient:unknown'
+    if 'too many' in t or 'concurrent' in t or 'rate limit' in t or '429' in t:
+        return 'transient:rate_limit'
+    if 'timeout' in t:
+        return 'transient:timeout'
+    if 'unauthorized' in t or '403' in t or '401' in t:
+        return 'transient:auth'
+    keys = ['unknown variable', 'unexpected end of input', 'expression cannot be empty', 'grouping data used outside', 'illegal group index', 'lookback', 'invalid number of inputs', 'cumulative lookback']
+    for k in keys:
+        if k in t:
+            return 'permanent:' + k.replace(' ', '_')
+    return 'permanent:other'

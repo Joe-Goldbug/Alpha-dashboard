@@ -31,7 +31,7 @@ class WorldQuantConfigService:
             logger.info("开始同步WorldQuant配置...")
             
             # 获取API配置数据
-            api_options = WorldQuantService.get_simulation_options()
+            api_options = WorldQuantService.get_simulation_options(force_api=True)
             
             # 清除旧的配置数据
             db.query(WorldQuantConfig).filter(WorldQuantConfig.is_active == True).update(

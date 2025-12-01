@@ -212,7 +212,7 @@ async def get_task_logs(
             
             # 检查主日志文件
             if os.path.exists(base_log_file):
-                log_files.append((base_log_file, 0))  # (文件路径, 优先级)
+                log_files.append((base_log_file, 0))
             
             # 检查轮转的备份文件（按时间顺序：.1是最新的备份，.3是最旧的）
             for i in range(1, 4):  # .1, .2, .3
@@ -238,8 +238,9 @@ async def get_task_logs(
             
             for file_path, priority in log_files:
                 try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        file_lines = f.readlines()
+                    with open(file_path, 'rb') as f:
+                        raw_lines = f.readlines()
+                        file_lines = [line.decode('utf-8', errors='replace') for line in raw_lines]
                         all_lines.extend(file_lines)
                         file_info.append({
                             "file": os.path.basename(file_path),
@@ -271,8 +272,9 @@ async def get_task_logs(
                 }
             
             # 只读取主文件
-            with open(base_log_file, 'r', encoding='utf-8') as f:
-                all_lines = f.readlines()
+            with open(base_log_file, 'rb') as f:
+                raw_lines = f.readlines()
+                all_lines = [line.decode('utf-8', errors='replace') for line in raw_lines]
             
             total_lines = len(all_lines)
             file_info = [{

@@ -256,6 +256,12 @@ async def get_worldquant_options(
 ) -> Dict[str, Any]:
     """获取WorldQuant Brain API的配置选项"""
     try:
+        from datetime import datetime, timedelta
+        last_sync_time = WorldQuantConfigService.get_last_sync_time()
+        is_available = WorldQuantConfigService.is_config_available()
+        need_refresh = (not is_available) or (last_sync_time is None) or (datetime.utcnow() - last_sync_time > timedelta(hours=1))
+        if need_refresh:
+            WorldQuantConfigService.sync_from_api()
         return WorldQuantService.get_simulation_options()
     except Exception as e:
         raise HTTPException(

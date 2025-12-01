@@ -311,11 +311,16 @@ class ProcessService:
                 # 获取跨平台进程创建参数
                 process_kwargs = self._get_process_kwargs()
                 
+                env = os.environ.copy()
+                env["PYTHONIOENCODING"] = "utf-8"
+                env["PYTHONUTF8"] = "1"
+                env["PYTHONPATH"] = self.project_root
                 process = subprocess.Popen(
                     cmd,
                     cwd=self.project_root,
                     stdout=f,
                     stderr=subprocess.STDOUT,  # 将stderr重定向到stdout
+                    env=env,
                     **process_kwargs  # 跨平台进程组创建
                 )
             
@@ -381,6 +386,15 @@ class ProcessService:
             
             script_path = self.script_paths[script_type]
             script_name = self.script_names[script_type]
+
+            # 相关性检查器需要会话保持器先运行
+            if script_type == "correlation_checker":
+                running_session = db.query(DiggingProcess).filter(
+                    DiggingProcess.script_type == "session_keeper",
+                    DiggingProcess.status == "running"
+                ).first()
+                if not running_session:
+                    raise ProcessError("请先启动会话保持器，再启动相关性检查器")
             
             # 生成简单的tag
             tag = f"{script_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -424,12 +438,24 @@ class ProcessService:
             
             # 启动进程，重定向输出到独立的日志文件
             with open(log_file_path, 'w', encoding='utf-8') as log_file:
+                start_ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                log_file.write(f"\n\n=== 进程启动 {start_ts} ===\n")
+                log_file.write(f"命令: {' '.join(cmd)}\n")
+                log_file.write(f"脚本: {script_name}\n")
+                log_file.write("=" * 50 + "\n\n")
+                log_file.flush()
+
+                env = os.environ.copy()
+                env["PYTHONIOENCODING"] = "utf-8"
+                env["PYTHONUTF8"] = "1"
+                env["PYTHONPATH"] = self.project_root
                 process = subprocess.Popen(
                     cmd,
                     cwd=self.project_root,
                     stdout=log_file,
                     stderr=subprocess.STDOUT,
-                    **process_kwargs  # 跨平台进程组创建
+                    env=env,
+                    **process_kwargs
                 )
             
             # 记录到数据库

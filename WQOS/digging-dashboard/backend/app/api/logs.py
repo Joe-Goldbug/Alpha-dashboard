@@ -12,6 +12,9 @@ from app.core.auth import get_current_active_user
 from app.db.models import DashboardUser
 from app.services.log_service import log_service
 from app.core.exceptions import ValidationError
+from app.db.database import get_db
+from database.db_manager import FactorDatabaseManager
+from config import RECORDS_PATH
 
 router = APIRouter()
 
@@ -128,3 +131,19 @@ async def get_log_levels(
     return {
         "levels": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
     }
+
+
+@router.get("/failures/stats")
+async def get_failure_stats(
+    dataset_id: Optional[str] = Query(None),
+    region: Optional[str] = Query(None),
+    step: Optional[int] = Query(None),
+    current_user: DashboardUser = Depends(get_current_active_user)
+) -> Dict[str, Any]:
+    db_path = os.path.join(os.path.dirname(RECORDS_PATH), 'database', 'factors.db')
+    db = FactorDatabaseManager(db_path)
+    stats = db.get_failure_stats()
+    if dataset_id or region or step is not None:
+        failed = db.get_failed_expressions(dataset_id=dataset_id, region=region, step=step, limit=200)
+        return {"stats": stats, "failed": failed}
+    return {"stats": stats}
