@@ -1,5 +1,7 @@
 # WorldQuant Alpha 挖掘仪表板
 
+> 更多仓库总览与导航请参见仓库根 [README](../README.md)
+
 ## 📖 简介
 这是一个用于WorldQuant Brain平台的Alpha因子挖掘工作流管理工具，提供友好的Web界面来管理和监控挖掘过程。
 请自行阅读开源许可，请勿以任何形式将代码打包售卖！
@@ -37,7 +39,7 @@
 
 ## 📁 项目结构
 ```
-WorldQuant/
+WQOS/
 ├── src/                          				# 核心脚本
 │   ├── check_optimized.py                     # ⭐ 第一轮筛选，将通过的因子标记为YELLOW
 │   ├── correlation_checker_independent.py     # ⭐ 本地计算相关性，筛选RA以及PPAC因子（已重构）
@@ -59,17 +61,3 @@ WorldQuant/
 └── README.md                     # 本文件
 ```
 
-## 💖 支持项目
-
-如果这个项目对您有帮助，欢迎请我吃KFC！您的支持是我继续完善项目的动力。
-
-<div align="center">
-  <img src="img/48e4fdf5114cf55b8252e3b7eb6b5347.png" alt="赞赏码" width="200"/>
-  <p><em>扫码支持项目发展</em></p>
-</div>
-
----
-
-<div align="center">
-  <p>⭐ 如果觉得项目有用，请给个Star支持一下！</p>
-</div>
