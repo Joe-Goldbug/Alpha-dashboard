@@ -1,7 +1,7 @@
 """
 数据获取客户端 (Data Client)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的数据获取相关功能：
 - 数据集获取
@@ -208,17 +208,16 @@ def process_datafields(df, data_type):
     
     try:
         if data_type == "matrix":
-            datafields = df[df['type'] == "MATRIX"]["id"].tolist()
+            raw_fields = df[df['type'] == "MATRIX"]["id"].tolist()
+            tb_fields = ["winsorize(ts_backfill(%s, 120), std=4)" % f for f in raw_fields]
+            return tb_fields
         elif data_type == "vector":
-            datafields = get_vec_fields(df[df['type'] == "VECTOR"]["id"].tolist())
+            raw_fields = df[df['type'] == "VECTOR"]["id"].tolist()
+            tb_fields = ["winsorize(ts_backfill(vec_sum(%s), 120), std=4)" % f for f in raw_fields]
+            return tb_fields
         else:
             logger.info(f"process_datafields: 未知数据类型: {data_type}")
             return []
-
-        tb_fields = []
-        for field in datafields:
-            tb_fields.append("winsorize(ts_backfill(%s, 120), std=4)" % field)
-        return tb_fields
         
     except Exception as e:
         logger.info(f"process_datafields: 处理{data_type}字段时发生异常: {e}")

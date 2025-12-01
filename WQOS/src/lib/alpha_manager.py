@@ -1,7 +1,7 @@
 """
 Alpha管理模块 (Alpha Manager)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的Alpha相关功能：
 - Alpha属性设置

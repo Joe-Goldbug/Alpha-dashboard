@@ -1,14 +1,16 @@
 """
 重构后的相关性检查器 - 主入口文件
-作者：e.e.
+作者：White Peace
 微信：Enkidu_lin
-日期：2025.09.05
+日期：2025年11月
 """
 
 import time
 import argparse
 from pathlib import Path
 from typing import List
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 # 导入重构后的模块
 from correlation.core.config_manager import CorrelationConfigManager

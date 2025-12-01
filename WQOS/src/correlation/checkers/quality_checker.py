@@ -1,8 +1,8 @@
 """
 质量检查器 - 负责Alpha质量标准检查
-作者：e.e.
+作者：White Peace
 微信：Enkidu_lin
-日期：2025.09.11
+日期：2025年11月
 """
 
 import pandas as pd

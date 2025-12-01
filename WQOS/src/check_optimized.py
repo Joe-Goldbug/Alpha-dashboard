@@ -1,12 +1,13 @@
 """
-作者：e.e.
+作者：White Peace
 微信：Enkidu_lin
-日期：2025.08.24
+日期：2025年11月
 """
 
 import time
 import os
 import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import logging
 import numpy as np
 import pandas as pd

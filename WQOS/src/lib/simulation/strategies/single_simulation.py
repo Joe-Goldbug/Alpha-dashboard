@@ -1,7 +1,7 @@
 """
 单模拟策略 (Single Simulation Strategy)
-作者：e.e.
-日期：2025.09.08
+作者：White Peace
+日期：2025年11月
 
 实现单模拟执行策略，每个alpha单独模拟
 """

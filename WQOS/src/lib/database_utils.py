@@ -1,7 +1,7 @@
 """
 数据库操作工具 (Database Utils)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的数据库相关功能：
 - 数据库写入

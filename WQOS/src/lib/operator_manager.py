@@ -1,7 +1,7 @@
 """
 操作符管理模块 (Operator Manager)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的操作符相关功能：
 - 操作符定义和获取

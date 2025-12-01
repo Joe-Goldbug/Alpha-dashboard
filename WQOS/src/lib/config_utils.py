@@ -1,7 +1,7 @@
 """
 配置管理工具 (Config Utils)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的配置相关功能：
 - 用户配置加载
@@ -19,22 +19,29 @@ from config import ROOT_PATH
 
 
 def load_user_config(txt_file=None):
-    """从config/user_info.txt加载用户配置"""
     if txt_file is None:
         txt_file = os.path.join(ROOT_PATH, 'config', 'user_info.txt')
     config = {}
+    env_map = {
+        'username': os.environ.get('WQ_USERNAME'),
+        'password': os.environ.get('WQ_PASSWORD'),
+        'server_secret': os.environ.get('WQ_SERVER_SECRET'),
+    }
+    for k, v in env_map.items():
+        if v:
+            config[k] = v
     try:
         with open(txt_file, 'r') as f:
             data = f.read().strip().split('\n')
             for line in data:
                 if ': ' in line:
                     key, value = line.split(': ', 1)
-                    # 移除引号
                     if value.startswith("'") and value.endswith("'"):
                         value = value[1:-1]
                     elif value.startswith('"') and value.endswith('"'):
                         value = value[1:-1]
-                    config[key] = value
+                    if key not in config or not config[key]:
+                        config[key] = value
     except FileNotFoundError:
         logger.warning(f"配置文件 {txt_file} 未找到")
     except Exception as e:

@@ -1,7 +1,7 @@
 """
 因子生成模块 (Factor Generator)
-作者：e.e.
-日期：2025年9月
+作者：White Peace
+日期：2025年11月
 
 从machine_lib_ee.py迁移的因子生成相关功能：
 - 一阶因子工厂
@@ -198,8 +198,8 @@ def trade_when_factory(op, field, region, delay=1):
 def ts_factory(op, field):
     """时间序列因子工厂"""
     output = []
-    # days = [3, 5, 10, 20, 60, 120, 240]
-    days = [5, 22, 66, 120, 240]
+    # days = [3, 5, 10, 20, 60, 126, 252]
+    days = [5, 22, 66, 126, 252]
 
     for day in days:
         alpha = "%s(%s, %d)" % (op, field, day)
@@ -211,8 +211,8 @@ def ts_factory(op, field):
 def ts_comp_factory(op, field, factor, paras):
     """时间序列复合因子工厂"""
     output = []
-    # l1, l2 = [3, 5, 10, 20, 60, 120, 240], paras
-    l1, l2 = [5, 22, 66, 120, 240], paras
+    # l1, l2 = [3, 5, 10, 20, 60, 126, 252], paras
+    l1, l2 = [5, 22, 66, 126, 252], paras
     comb = list(product(l1, l2))
 
     for day, para in comb:

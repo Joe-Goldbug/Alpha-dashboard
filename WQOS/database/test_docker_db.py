@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-作者：e.e.
-日期：2025.09.10
+作者：White Peace
+日期：2025年11月
 功能：Docker环境数据库访问测试脚本
 """
 

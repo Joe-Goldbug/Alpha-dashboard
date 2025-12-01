@@ -1,7 +1,7 @@
 """
 统一模拟执行框架 (Unified Simulation Framework)
-作者：e.e.
-日期：2025.09.08
+作者：White Peace
+日期：2025年11月
 
 提供统一的模拟执行接口，支持：
 - 单模拟策略

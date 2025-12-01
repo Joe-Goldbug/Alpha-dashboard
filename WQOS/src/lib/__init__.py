@@ -1,7 +1,7 @@
 """
 重构后的machine_lib库
-作者：e.e.
-日期：2025年1月
+作者：White Peace
+日期：2025年11月
 
 模块说明：
 - config_utils: 配置管理工具

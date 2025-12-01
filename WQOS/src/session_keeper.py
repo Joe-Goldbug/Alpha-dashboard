@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 独立会话保持器 - 专门负责登录认证和会话维护
-作者：e.e.
-日期：2025.09.06
+作者：White Peace
+日期：2025年11月
 
 核心功能：
 1. 定期自动登录认证
@@ -144,23 +144,20 @@ class SessionKeeper:
             raise Exception("数据库连接失败，会话保持器无法启动")
     
     def _load_user_credentials(self) -> tuple:
-        """加载用户凭据 - 使用与原系统一致的解析方式"""
+        env_user = os.environ.get('WQ_USERNAME')
+        env_pass = os.environ.get('WQ_PASSWORD')
+        if env_user and env_pass:
+            return env_user, env_pass
         user_info_file = Path(ROOT_PATH) / 'config' / 'user_info.txt'
         if not user_info_file.exists():
-            raise Exception("用户配置文件不存在：config/user_info.txt")
-        
-        # 使用与machine_lib_ee.py相同的解析逻辑
+            raise Exception("用户配置文件不存在：config/user_info.txt，且未设置环境变量 WQ_USERNAME/WQ_PASSWORD")
         with open(user_info_file, 'r', encoding='utf-8') as f:
             data = f.read().strip().split('\n')
             data = {line.split(': ')[0]: line.split(': ')[1] for line in data if ': ' in line}
-        
         if 'username' not in data or 'password' not in data:
             raise Exception("用户配置文件缺少username或password字段")
-        
-        # 去除引号 - 与原系统一致
-        username = data['username'][1:-1]  # 去除首尾的单引号
-        password = data['password'][1:-1]  # 去除首尾的单引号
-        
+        username = data['username'][1:-1]
+        password = data['password'][1:-1]
         return username, password
     
     def create_new_session(self) -> requests.Session:

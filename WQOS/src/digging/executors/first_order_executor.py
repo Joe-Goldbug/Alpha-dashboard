@@ -1,7 +1,7 @@
 """
 一阶挖掘执行器 (First Order Executor)
-作者：e.e.
-日期：2025.09.05
+作者：White Peace
+日期：2025年11月
 
 负责执行一阶因子挖掘，包括：
 - 字段获取和处理
@@ -94,15 +94,55 @@ class FirstOrderExecutor(BaseExecutor):
         Returns:
             List[str]: 一阶因子表达式列表
         """
-        # 获取过滤后的操作符
         ts_ops, basic_ops, group_ops = get_filtered_operators()
+        try:
+            from lib.operator_manager import vec_ops
+        except Exception:
+            from lib.operator_manager import get_available_ops
+            get_available_ops()
+            from lib.operator_manager import vec_ops
+
+        df = get_datafields(
+            self.session,
+            dataset_id=self.current_dataset,
+            region=self.config_manager.region,
+            universe=self.config_manager.universe,
+            delay=self.config_manager.delay,
+        )
+        matrix_fields = process_datafields(df, "matrix")
+        vector_fields = process_datafields(df, "vector")
+
+        ops_matrix = ts_ops + basic_ops
+        ops_vector = ts_ops + basic_ops
+
         first_order = []
-        self.logger.info(f"请构建一阶因子表达式")       
-        
+        if matrix_fields:
+            first_order += first_order_factory(matrix_fields, ops_matrix)
+        if vector_fields:
+            first_order += first_order_factory(vector_fields, ops_vector)
+
         if self.logger:
+            self.logger.info(f"请构建一阶因子表达式")
             self.logger.info(f"📊 生成一阶因子: {len(first_order):,} 个")
-        
-        return first_order
+
+        filtered = list(dict.fromkeys(first_order))
+        try:
+            db = self.config_manager.get_database_manager()
+            failed = db.get_failed_expressions(
+                dataset_id=self.current_dataset,
+                region=self.config_manager.region,
+                step=1,
+                failure_reason='permanent'
+            )
+            bad_set = {rec['expression'] for rec in failed}
+            if bad_set:
+                filtered = [expr for expr in filtered if expr not in bad_set]
+                if self.logger:
+                    self.logger.info(f"📊 过滤永久失败表达式: {len(bad_set):,} 条，剩余 {len(filtered):,} 条")
+        except Exception:
+            pass
+
+        return filtered
     
     def filter_completed_factors(self, all_factors: List[str]) -> List[str]:
         """过滤已完成的因子

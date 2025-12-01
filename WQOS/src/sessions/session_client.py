@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 会话客户端 - 从数据库获取有效cookies创建会话
-作者：e.e.
-日期：2025.09.06
+作者：White Peace
+日期：2025年11月
 
 核心功能：
 1. 从数据库读取SessionKeeper维护的cookies

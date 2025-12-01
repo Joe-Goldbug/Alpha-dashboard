@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 数据库分库迁移脚本
-作者：e.e.
-日期：2025.09.05
+作者：White Peace
+日期：2025年11月
 
 功能：
 - 将主数据库中的factor_expressions表数据迁移到数据集分库

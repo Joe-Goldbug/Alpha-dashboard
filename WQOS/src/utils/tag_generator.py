@@ -1,8 +1,8 @@
 """
 标签生成器模块 (Tag Generator)
-作者：e.e.
+作者：White Peace
 微信：Enkidu_lin
-日期：2025.08.24
+日期：2025年11月
 
 功能：
 - 生成新格式的tag名称

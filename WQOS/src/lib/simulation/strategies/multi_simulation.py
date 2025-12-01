@@ -1,7 +1,7 @@
 """
 多模拟策略 (Multi Simulation Strategy)
-作者：e.e.
-日期：2025.09.08
+作者：White Peace
+日期：2025年11月
 
 实现多模拟执行策略，每个多模拟包含10个alpha
 """

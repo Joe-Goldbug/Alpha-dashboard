@@ -1,7 +1,7 @@
 """
 三阶挖掘执行器 (Third Order Executor)
-作者：e.e.
-日期：2025.09.05
+作者：White Peace
+日期：2025年11月
 
 负责执行三阶因子挖掘，包括：
 - 基于二阶符合条件因子生成三阶因子
@@ -74,17 +74,32 @@ class ThirdOrderExecutor(BaseExecutor):
         Returns:
             List[Tuple[str, int]]: 三阶因子表达式和衰减值的元组列表
         """
-        # 转换二阶因子格式
         so_layer = transform(next_factors + decay_factors)
-        
-        # 生成三阶因子
         third_order_factors = []
+        # 使用交易条件工厂在二阶表达式基础上构造第三阶表达式
+        # op 名称采用 'trade_when'，区域与延迟来自当前配置
+        first_order_exprs = [exp for exp, _decay in so_layer]
+        if first_order_exprs:
+            for fo in first_order_exprs:
+                # 基于当前区域和延迟生成若干条件表达式
+                exprs = trade_when_factory('trade_when', fo, self.config_manager.region, delay=self.config_manager.delay)
+                # 继承 decay（无对应时默认为0）
+                decay_map = {exp: dec for exp, dec in so_layer}
+                for ex in exprs:
+                    d = decay_map.get(fo, 0)
+                    third_order_factors.append((ex, d))
         self.logger.info(f"请构建三阶因子表达式")
-        
         if self.logger:
             self.logger.info(f"📊 生成三阶因子: {len(third_order_factors):,} 个")
-        
-        return third_order_factors
+        # 去重
+        seen = set()
+        uniq = []
+        for exp, dec in third_order_factors:
+            if exp in seen:
+                continue
+            seen.add(exp)
+            uniq.append((exp, dec))
+        return uniq
     
     def filter_completed_third_order_factors(self, all_factors: List[Tuple[str, int]]) -> List[Tuple[str, int]]:
         """过滤已完成的三阶因子

@@ -1,7 +1,7 @@
 """
 二阶挖掘执行器 (Second Order Executor)
-作者：e.e.
-日期：2025.09.05
+作者：White Peace
+日期：2025年11月
 
 负责执行二阶因子挖掘，包括：
 - 基于一阶符合条件因子生成二阶因子
@@ -73,20 +73,29 @@ class SecondOrderExecutor(BaseExecutor):
         Returns:
             List[Tuple[str, int]]: 二阶因子表达式和衰减值的元组列表
         """
-        # 转换一阶因子格式
         fo_layer = transform(next_factors + decay_factors)
-        
-        # 获取过滤后的操作符
         ts_ops, basic_ops, group_ops = get_filtered_operators()
-        
-        # 生成二阶因子
         second_order_factors = []
+        first_order_exprs = [exp for exp, _decay in fo_layer]
+        if first_order_exprs:
+            so_exprs = get_group_second_order_factory(first_order_exprs, group_ops, self.config_manager.region)
+            # 继承一阶的 decay（无对应时默认为0）
+            decay_map = {exp: dec for exp, dec in fo_layer}
+            for se in so_exprs:
+                d = decay_map.get(se, 0)
+                second_order_factors.append((se, d))
         self.logger.info(f"请构建二阶因子表达式")
-        
         if self.logger:
             self.logger.info(f"📊 生成二阶因子: {len(second_order_factors):,} 个")
-        
-        return second_order_factors
+        # 去重
+        seen = set()
+        uniq = []
+        for exp, dec in second_order_factors:
+            if exp in seen:
+                continue
+            seen.add(exp)
+            uniq.append((exp, dec))
+        return uniq
     
     def filter_completed_second_order_factors(self, all_factors: List[Tuple[str, int]]) -> List[Tuple[str, int]]:
         """过滤已完成的二阶因子

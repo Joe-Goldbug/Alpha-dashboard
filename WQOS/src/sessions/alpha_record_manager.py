@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-作者：e.e.
+作者：White Peace
 微信：Enkidu_lin
-日期：2025.08.24
+日期：2025年11月
 Alpha记录管理模块 (数据库版本)
 提供读取、写入和查询Alpha记录的功能
 
