@@ -43,6 +43,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 import { DashboardLayout } from '../components/Layout/DashboardLayout';
+import MultiTokenSearch from '../components/Search/MultiTokenSearch';
+import { splitTokens, matchByTokens, buildSearchableFromScript } from '../utils/search';
 import { RootState, AppDispatch } from '../store';
 import { 
   getProcessStatusAsync, 
@@ -73,6 +75,7 @@ const ProcessManagementPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<string>('active');
+  const [searchTask, setSearchTask] = useState<string>('');
   
   // 日志查看状态
   const [logDrawerVisible, setLogDrawerVisible] = useState(false);
@@ -774,6 +777,15 @@ const ProcessManagementPage: React.FC = () => {
   const activeScripts = scripts.filter(script => script.status === 'running');
   const historyScripts = scripts.filter(script => script.status === 'stopped');
 
+  const matchScript = (record: ScriptInfo) => {
+    const tokens = splitTokens(searchTask);
+    const searchable = buildSearchableFromScript(record);
+    return matchByTokens(tokens, searchable);
+  };
+
+  const filteredActiveScripts = activeScripts.filter(matchScript);
+  const filteredHistoryScripts = historyScripts.filter(matchScript);
+
   return (
     <DashboardLayout>
       <div style={{ padding: '24px' }}>
@@ -804,6 +816,16 @@ const ProcessManagementPage: React.FC = () => {
 
         {/* 脚本管理表格 */}
         <Card >
+          <Row style={{ marginBottom: 12 }} justify="space-between" align="middle">
+            <Col flex="auto">
+              <MultiTokenSearch
+                value={searchTask}
+                onChange={setSearchTask}
+                onSearch={setSearchTask}
+                style={{ maxWidth: 320 }}
+              />
+            </Col>
+          </Row>
           <Tabs 
             activeKey={activeTab} 
             onChange={setActiveTab}
@@ -819,7 +841,7 @@ const ProcessManagementPage: React.FC = () => {
                 children: (
                   <Table
                     columns={getActiveColumns()}
-                    dataSource={activeScripts}
+                    dataSource={filteredActiveScripts}
                     rowKey="id"
                     loading={loading}
                     pagination={false}
@@ -841,7 +863,7 @@ const ProcessManagementPage: React.FC = () => {
                 children: (
                   <Table
                     columns={getHistoryColumns()}
-                    dataSource={historyScripts}
+                    dataSource={filteredHistoryScripts}
                     rowKey="id"
                     loading={loading}
                     pagination={{

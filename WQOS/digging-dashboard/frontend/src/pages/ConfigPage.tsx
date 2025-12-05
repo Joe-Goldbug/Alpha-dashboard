@@ -38,6 +38,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 import { DashboardLayout } from '../components/Layout/DashboardLayout';
+import MultiTokenSearch from '../components/Search/MultiTokenSearch';
+import { splitTokens, matchByTokens, buildSearchableFromTemplate } from '../utils/search';
 import { RootState, AppDispatch } from '../store';
 import { 
   fetchConfigTemplatesAsync, 
@@ -98,13 +100,9 @@ const ConfigPage: React.FC = () => {
   }, [dispatch]);
 
   const filteredTemplates = templates.filter((t: ConfigTemplate) => {
-    const q = searchDesc.trim().toLowerCase();
-    if (!q) return true;
-    const d = (t.description || '').toLowerCase();
-    const n = (t.name || '').toLowerCase();
-    const c = t.config_data || ({} as any);
-    const preview = `${c.region || ''} ${c.universe || ''} delay:${c.delay ?? ''}`.toLowerCase();
-    return d.includes(q) || n.includes(q) || preview.includes(q);
+    const tokens = splitTokens(searchDesc);
+    const searchable = buildSearchableFromTemplate(t);
+    return matchByTokens(tokens, searchable);
   });
 
   // 当worldQuantOptions加载完成后，初始化默认的EQUITY选项
@@ -671,12 +669,10 @@ const ConfigPage: React.FC = () => {
             <Card>
               <Row style={{ marginBottom: 12 }} justify="space-between" align="middle">
                 <Col flex="auto">
-                  <Input.Search
-                    allowClear
-                    placeholder="按描述/名称/预览搜索"
+                  <MultiTokenSearch
                     value={searchDesc}
-                    onChange={(e) => setSearchDesc(e.target.value)}
-                    onSearch={(v) => setSearchDesc(v)}
+                    onChange={setSearchDesc}
+                    onSearch={setSearchDesc}
                     style={{ maxWidth: 320 }}
                   />
                 </Col>
