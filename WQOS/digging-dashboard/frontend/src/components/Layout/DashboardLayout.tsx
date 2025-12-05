@@ -94,7 +94,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       icon: <GithubOutlined />,
       label: '开源项目地址',
       onClick: () => {
-        window.open('https://github.com/Yao-lin101/WQOS', '_blank');
+        window.open('https://github.com/Joe-Goldbug/Alpha-dashboard', '_blank');
       },
     },
     {
@@ -148,7 +148,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Avatar 
                 size="small" 
-                src="https://q.qlogo.cn/headimg_dl?dst_uin=1017789696&spec=640&img_type=jpg"
+                src="/kali.png"
                 icon={<UserOutlined />}
               />
               <Text strong>{user?.username}</Text>
