@@ -70,7 +70,9 @@ class Settings(BaseSettings):
     # CORS配置
     allowed_origins: List[str] = [
         "http://localhost:3000",
-        "http://127.0.0.1:3000"
+        "http://127.0.0.1:3000",
+        "http://localhost:8091",
+        "http://127.0.0.1:8091"
     ]
     
     # 挖掘脚本配置 - 动态路径检测
