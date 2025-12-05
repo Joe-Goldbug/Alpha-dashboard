@@ -88,6 +88,7 @@ const ConfigPage: React.FC = () => {
   const [isRecommendedFieldsModalVisible, setIsRecommendedFieldsModalVisible] = useState(false);
   const [tempRecommendedFields, setTempRecommendedFields] = useState<string[]>([]);
   const [recommendedFieldsInput, setRecommendedFieldsInput] = useState('');
+  const [searchDesc, setSearchDesc] = useState('');
 
   useEffect(() => {
     dispatch(fetchConfigTemplatesAsync());
@@ -95,6 +96,16 @@ const ConfigPage: React.FC = () => {
     dispatch(fetchWorldQuantOptionsAsync());
     dispatch(getWorldQuantConfigStatusAsync());
   }, [dispatch]);
+
+  const filteredTemplates = templates.filter((t: ConfigTemplate) => {
+    const q = searchDesc.trim().toLowerCase();
+    if (!q) return true;
+    const d = (t.description || '').toLowerCase();
+    const n = (t.name || '').toLowerCase();
+    const c = t.config_data || ({} as any);
+    const preview = `${c.region || ''} ${c.universe || ''} delay:${c.delay ?? ''}`.toLowerCase();
+    return d.includes(q) || n.includes(q) || preview.includes(q);
+  });
 
   // 当worldQuantOptions加载完成后，初始化默认的EQUITY选项
   useEffect(() => {
@@ -658,9 +669,21 @@ const ConfigPage: React.FC = () => {
         <Tabs activeKey={activeTab} onChange={setActiveTab}>
           <TabPane tab="配置模板列表" key="list">
             <Card>
+              <Row style={{ marginBottom: 12 }} justify="space-between" align="middle">
+                <Col flex="auto">
+                  <Input.Search
+                    allowClear
+                    placeholder="按描述/名称/预览搜索"
+                    value={searchDesc}
+                    onChange={(e) => setSearchDesc(e.target.value)}
+                    onSearch={(v) => setSearchDesc(v)}
+                    style={{ maxWidth: 320 }}
+                  />
+                </Col>
+              </Row>
               <Table
                 columns={columns}
-                dataSource={templates}
+                dataSource={filteredTemplates}
                 loading={loading}
                 rowKey="id"
                 pagination={{
