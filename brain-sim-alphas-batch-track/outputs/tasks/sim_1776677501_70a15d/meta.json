@@ -1,0 +1,22 @@
+{
+  "task_id": "sim_1776677501_70a15d",
+  "pid": 39344,
+  "status": "running",
+  "started_at": "2026-04-20T09:31:41.680385+00:00",
+  "mode": "batch_bs3_cc2",
+  "command": [
+    "/root/.pyenv/versions/3.14.3/bin/python",
+    "/workspace/brain-sim-alphas-batch-track/scripts/batch_simulator.py",
+    "--alpha-json",
+    "data/grid_variants.json",
+    "--output-csv",
+    "outputs/simulation_status_grid.csv",
+    "--batch-size",
+    "3",
+    "--concurrency",
+    "2"
+  ],
+  "cwd": "/workspace/brain-sim-alphas-batch-track",
+  "stdout_log": "/workspace/brain-sim-alphas-batch-track/outputs/tasks/sim_1776677501_70a15d/stdout.log",
+  "stderr_log": "/workspace/brain-sim-alphas-batch-track/outputs/tasks/sim_1776677501_70a15d/stderr.log"
+}
