@@ -1,0 +1,24 @@
+{
+  "task_id": "sim_1771570420_c4d3bf",
+  "pid": 92648,
+  "status": "running",
+  "started_at": "2026-02-20T06:53:40.490169+00:00",
+  "mode": "batch_bs1_cc1",
+  "command": [
+    "C:\\Python313\\python.exe",
+    "D:\\BRAINProject\\cnhkmcp\\cnhkmcp\\untracked\\skills\\brain-simAlphasinBatch-and-track\\scripts\\batch_simulator.py",
+    "--config",
+    "configs/config.json",
+    "--alpha-json",
+    "d:/BRAINProject/cnhkmcp/cnhkmcp/untracked/skills/brain-inspectRawTemplate-create-Setting/processed_templates/analyst45_EUR_1_idea_1771336020544929600/alpha_list.json",
+    "--output-csv",
+    "outputs/simulation_status.csv",
+    "--batch-size",
+    "1",
+    "--concurrency",
+    "1"
+  ],
+  "cwd": "D:\\BRAINProject\\cnhkmcp\\cnhkmcp\\untracked\\skills\\brain-simAlphasinBatch-and-track",
+  "stdout_log": "D:\\BRAINProject\\cnhkmcp\\cnhkmcp\\untracked\\skills\\brain-simAlphasinBatch-and-track\\outputs\\tasks\\sim_1771570420_c4d3bf\\stdout.log",
+  "stderr_log": "D:\\BRAINProject\\cnhkmcp\\cnhkmcp\\untracked\\skills\\brain-simAlphasinBatch-and-track\\outputs\\tasks\\sim_1771570420_c4d3bf\\stderr.log"
+}

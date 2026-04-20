@@ -1,0 +1,7 @@
+2026-02-20 14:53:41,351 - BatchSimulator - INFO - Loaded credentials from config file: D:\BRAINProject\cnhkmcp\cnhkmcp\untracked\skills\brain-simAlphasinBatch-and-track\configs\config.json
+2026-02-20 14:53:41,352 - BatchSimulator - INFO - Using output CSV: D:\BRAINProject\cnhkmcp\cnhkmcp\untracked\skills\brain-simAlphasinBatch-and-track\outputs\simulation_status.csv
+2026-02-20 14:53:42,670 - BatchSimulator - INFO - No existing state file found at D:\BRAINProject\cnhkmcp\cnhkmcp\untracked\skills\brain-simAlphasinBatch-and-track\outputs\simulation_status.csv. Starting fresh.
+2026-02-20 14:53:42,674 - BatchSimulator - INFO - Starting simulation run for 2 alphas. Batch size: 1, Workers: 1
+2026-02-20 14:53:42,674 - BatchSimulator - INFO - Resume check: recognized 0/2 completed from D:\BRAINProject\cnhkmcp\cnhkmcp\untracked\skills\brain-simAlphasinBatch-and-track\outputs\simulation_status.csv; pending 2.
+2026-02-20 14:53:42,686 - BatchSimulator - INFO - Submitting batch of 1 alphas...
+2026-02-20 14:53:42,985 - BatchSimulator - INFO - Waiting for batch to spawn children (https://api.worldquantbrain.com/simulations/30WiYB8GM5a58Gj6q5we7FE)...

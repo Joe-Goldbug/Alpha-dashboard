@@ -1,0 +1,24 @@
+{
+  "task_id": "sim_1776670741_494151",
+  "pid": 18112,
+  "status": "running",
+  "started_at": "2026-04-20T07:39:01.615091+00:00",
+  "mode": "batch_bs4_cc1",
+  "command": [
+    "/root/.pyenv/versions/3.14.3/bin/python",
+    "/data/user/skills/brain-sim-alphas-batch-track/scripts/batch_simulator.py",
+    "--config",
+    "configs/config.json",
+    "--alpha-json",
+    "data/top4_alphas.json",
+    "--output-csv",
+    "outputs/simulation_status_top4.csv",
+    "--batch-size",
+    "4",
+    "--concurrency",
+    "1"
+  ],
+  "cwd": "/data/user/skills/brain-sim-alphas-batch-track",
+  "stdout_log": "/data/user/skills/brain-sim-alphas-batch-track/outputs/tasks/sim_1776670741_494151/stdout.log",
+  "stderr_log": "/data/user/skills/brain-sim-alphas-batch-track/outputs/tasks/sim_1776670741_494151/stderr.log"
+}

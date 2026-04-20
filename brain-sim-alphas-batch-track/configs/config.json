@@ -1,0 +1,9 @@
+{
+  "email": "whitepeace567@gmail.com",
+  "password": "Yan20040727!",
+  "api_settings": {
+    "base_url": "https://api.worldquantbrain.com",
+    "timeout": 30,
+    "retry_attempts": 3
+  }
+}

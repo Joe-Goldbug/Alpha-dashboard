@@ -1,0 +1,8 @@
+2026-04-20 07:40:54,995 - BatchSimulator - INFO - Loaded credentials from config file: /data/user/skills/brain-sim-alphas-batch-track/configs/config.json
+2026-04-20 07:40:54,996 - BatchSimulator - INFO - Using output CSV: /data/user/skills/brain-sim-alphas-batch-track/outputs/simulation_status_top4.csv
+2026-04-20 07:40:55,995 - BatchSimulator - INFO - No existing state file found at /data/user/skills/brain-sim-alphas-batch-track/outputs/simulation_status_top4.csv. Starting fresh.
+2026-04-20 07:40:55,995 - BatchSimulator - INFO - Starting simulation run for 4 alphas. Batch size: 4, Workers: 1
+2026-04-20 07:40:55,995 - BatchSimulator - INFO - Resume check: recognized 0/4 completed from /data/user/skills/brain-sim-alphas-batch-track/outputs/simulation_status_top4.csv; pending 4.
+2026-04-20 07:40:55,996 - BatchSimulator - INFO - Submitting batch of 4 alphas...
+2026-04-20 07:40:56,458 - BatchSimulator - ERROR - Batch submission failed: 401 - {"detail":"Incorrect authentication credentials."}
+2026-04-20 07:40:56,468 - BatchSimulator - INFO - All batches processed. Run summary -> skipped: 0, submitted: 4, completed: 0, failed: 4
