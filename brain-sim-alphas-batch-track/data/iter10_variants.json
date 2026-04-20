@@ -1,0 +1,154 @@
+[
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_buy_rebalancing_price_avg / (oth561_basic_stat_sell_rebalancing_price_avg + 1)), 20)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(oth561_basic_stat_buy_rebalancing_price_avg > oth561_basic_stat_sell_rebalancing_price_avg, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_net_buy_user_num), 60)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_net_buy_user_num), 100)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_decay_linear(rank(oth561_basic_stat_net_buy_user_num), 60)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "ts_mean(rank(oth561_basic_stat_sell_rebalancing_price_avg), 20)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_buy_rebalancing_price_avg), 20)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(oth561_basic_stat_net_buy_user_num < 0, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  }
+]

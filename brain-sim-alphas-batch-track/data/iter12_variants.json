@@ -1,0 +1,154 @@
+[
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(rank(oth561_basic_stat_buy_user_num) > 0.5, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(rank(oth561_basic_stat_buy_user_num) > 0.8, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(rank(oth561_basic_stat_buy_user_num) > 0.3, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20) * rank(oth561_basic_stat_buy_user_num)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20) * (1 - rank(oth561_basic_stat_buy_user_num))"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(ts_mean(rank(oth561_basic_stat_buy_user_num), 20) > 0.5, -ts_mean(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "-ts_median(rank(oth561_basic_stat_net_buy_user_num), 20)"
+  },
+  {
+    "type": "REGULAR",
+    "settings": {
+      "instrumentType": "EQUITY",
+      "region": "CHN",
+      "universe": "TOP2000U",
+      "delay": 1,
+      "decay": 5,
+      "neutralization": "SLOW_AND_FAST",
+      "truncation": 0.08,
+      "pasteurization": "ON",
+      "unitHandling": "VERIFY",
+      "nanHandling": "OFF",
+      "language": "FASTEXPR",
+      "visualization": false,
+      "maxTrade": "OFF"
+    },
+    "regular": "trade_when(rank(oth561_basic_stat_buy_user_num) > 0.5, -ts_median(rank(oth561_basic_stat_net_buy_user_num), 20), -1)"
+  }
+]

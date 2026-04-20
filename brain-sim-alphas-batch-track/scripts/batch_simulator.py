@@ -621,7 +621,7 @@ class BatchSimulator:
                         sim_data = sim_resp.json()
                         status = sim_data.get("status")
 
-                        if status in ["COMPLETED", "COMPLETE", "ERROR", "FAIL", "FAILED"]:
+                        if status in ["COMPLETED", "COMPLETE", "ERROR", "FAIL", "FAILED", "CANCELLED"]:
                             # Simulation finished
                             results[sim_id] = sim_data
                             # Remove from active set
