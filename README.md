@@ -1,7 +1,7 @@
 # Alpha Dashboard
 
 ## 🎯 概览
-本仓库提供用于 WorldQuant Brain 平台的因子挖掘与管理工具集合，涵盖脚本、服务与可视化仪表板。主工程位于 `WQOS/` 目录，包含核心挖掘流程、重构后的相关性检查器以及 Web 仪表板。
+本仓库提供用于因子挖掘与管理工具集合，涵盖脚本、服务与可视化仪表板。主工程位于 `WQOS/` 目录，包含核心挖掘流程、重构后的相关性检查器以及 Web 仪表板。
 
 - 📖 子项目详解：`WQOS/README.md`
 - 🧭 仪表板入口：`WQOS/digging-dashboard/`（`frontend/` React、`backend/` FastAPI）
